@@ -20,6 +20,8 @@ resource "aws_lambda_function" "lambdalogger" {
 
       HUMIO_TOKEN      = "Ca70r0iYCBEH2FFsXQmTYBWZ1xjttKGNZBvAkNw82iI6"
       HUMIO_REPOSITORY = "netlify-production"
+
+      EXTRA_TAGS = "source:lambdalogger"
     }
   }
 
@@ -34,13 +36,22 @@ resource "aws_cloudwatch_log_group" "lambdalogger" {
   retention_in_days = 5
 }
 
-# let us be triggered by writes to cloudwatch
+# let us be triggered by writes to cloudwatch (east)
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   principal     = "logs.us-east-1.amazonaws.com"
   function_name = "${aws_lambda_function.lambdalogger.function_name}"
   source_arn    = "arn:aws:logs:us-east-1:${data.aws_caller_identity.current.account_id}:log-group:*:*"
+}
+
+# let us be triggered by writes to cloudwatch (west)
+resource "aws_lambda_permission" "allow_cloudwatch_west" {
+  statement_id  = "AllowExecutionFromCloudWatch_west"
+  action        = "lambda:InvokeFunction"
+  principal     = "logs.us-west-2.amazonaws.com"
+  function_name = "${aws_lambda_function.lambdalogger.function_name}"
+  source_arn    = "arn:aws:logs:us-west-2:${data.aws_caller_identity.current.account_id}:log-group:*:*"
 }
 
 #
@@ -67,7 +78,7 @@ EOF
 }
 
 
-# this is a POLICY to attach to the above role so we can 
+# this is a POLICY to attach to the above role so we can
 # send logs to cloudwatch, which is necessary for our own output
 resource "aws_iam_role_policy" "cloudwatch_logs" {
     name = "cloudwatch_log_access"
@@ -113,7 +124,7 @@ resource "aws_iam_role_policy" "s3_zips" {
 EOF
 }
 
-# 
+#
 # PLUMBING
 #
 variable profile {
