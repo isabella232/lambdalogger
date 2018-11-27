@@ -6,14 +6,14 @@ bin = $(project).out
 zip = $(project)-latest.zip
 
 REGION ?= us-east-1
-BUCKET ?= rybit-lambda-zips
+BUCKET ?= netlify-infrastructure
 PROFILE ?= default
 ARCH ?= amd64
 OS ?= linux
 
 sha = $(shell git rev-parse HEAD | cut -b -6)
 tag = $(shell git show-ref --tags -d | grep $(sha) | cut -d '/' -f 3-)
-ldflags = -X github.com/rybit/$(project)/version.SHA=$(sha) -X github.com/rybit/$(project)/version.Tag=$(tag)
+ldflags = -X github.com/netlify/$(project)/version.SHA=$(sha) -X github.com/netlify/$(project)/version.Tag=$(tag)
 clean = $(shell git status --porcelain)
 
 ###################################################################################################
@@ -34,7 +34,7 @@ build: *.go
 ###################################################################################################
 deploy: clean upload
 	@echo "=== Updating function: $(func_name)"
-	@aws --profile $(PROFILE) lambda update-function-code --s3-bucket $(BUCKET) --s3-key $(project)/$(zip) --function-name $(func_name) --region $(REGION) > /dev/null
+	@aws --profile $(PROFILE) lambda update-function-code --s3-bucket $(BUCKET) --s3-key lambda/$(project)/$(zip) --function-name $(func_name) --region $(REGION) > /dev/null
 	@echo "=== Finished pushing to DEV env"
 
 deploy_test:
@@ -43,8 +43,8 @@ upload_test:
 	cd test_func && $(MAKE) upload
 
 upload: make_zip
-	@echo "=== Uploading $(BUCKET)/$(project)/$(zip)"
-	@aws --profile $(PROFILE) s3 cp dist/$(zip) s3://$(BUCKET)/$(project)/$(zip)
+	@echo "=== Uploading $(BUCKET)/lambda/$(project)/$(zip)"
+	@aws --profile $(PROFILE) s3 cp dist/$(zip) s3://$(BUCKET)/lambda/$(project)/$(zip)
 
 make_zip: build
 	@which aws > /dev/null || { echo "Missing aws cli"; exit 1; }
@@ -52,7 +52,7 @@ make_zip: build
 
 prod_deploy: zip = $(project)-$(sha).zip
 prod_deploy: _check_clean clean upload
-	@echo "=== Uploading $(BUCKET)/$(project)/$(zip)"
+	@echo "=== Uploading $(BUCKET)/lambda/$(project)/$(zip)"
 
 _check_clean:
 	@echo "=== Checking if it is a clean repo"

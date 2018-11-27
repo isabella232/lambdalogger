@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambdacontext"
 	"github.com/sirupsen/logrus"
 
-	"github.com/rybit/lambdalogger/version"
+	"github.com/netlify/lambdalogger/version"
 )
 
 type LogConfig struct {
