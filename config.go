@@ -11,8 +11,10 @@ import (
 type configuration struct {
 	LogConfig
 
-	Humio      humioConfig
-	TimeoutSec int `split_words:"true"`
+	Humio       humioConfig
+	TimeoutSec  int               `split_words:"true"`
+	ExtraFields map[string]string `split_words:"true"`
+	ExtraTags   map[string]string `split_words:"true"`
 }
 
 func (c *configuration) validate() error {

@@ -61,6 +61,14 @@ func newHumioMsg(decoded *decodedEvent) *humioMsg {
 		},
 	}
 
+	for k, v := range config.ExtraTags {
+		msg.Tags[k] = v
+	}
+
+	for k, v := range config.ExtraFields {
+		msg.Fields[k] = v
+	}
+
 	if config.Humio.Parser != "" {
 		msg.Type = config.Humio.Parser
 	} else {
