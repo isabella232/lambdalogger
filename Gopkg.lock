@@ -46,14 +46,6 @@
   version = "v0.8.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:ab137c3019b2ec346b0b658eb9432e4f33b5304011bd999f12bb4514ed6e4583"
-  name = "github.com/rybit/lambda_example"
-  packages = ["util"]
-  pruneopts = "UT"
-  revision = "d801e5689c1f939009eff92865d7054e3bd98596"
-
-[[projects]]
   digest = "1:69b1cc331fca23d702bd72f860c6a647afd0aa9fcbc1d0659b1365e26546dd70"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
@@ -89,7 +81,6 @@
     "github.com/joho/godotenv",
     "github.com/kelseyhightower/envconfig",
     "github.com/pkg/errors",
-    "github.com/rybit/lambda_example/util",
     "github.com/sirupsen/logrus",
   ]
   solver-name = "gps-cdcl"

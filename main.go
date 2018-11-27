@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rybit/lambda_example/util"
-
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/sirupsen/logrus"
 )
@@ -33,7 +31,7 @@ func main() {
 
 // handleEvent will decode the payload and send it to humio. Errors will only be returned if we could recover on retry
 func handleEvent(ctx context.Context, input rawEvent) error {
-	log := rootLogger.WithField("aws_id", util.RequestID(ctx))
+	log := rootLogger.WithField("aws_id", RequestID(ctx))
 	decoded, err := input.decode()
 	if err != nil {
 		log.WithError(err).Error("Failed to decode message")
