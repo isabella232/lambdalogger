@@ -6,7 +6,7 @@ resource "aws_lambda_function" "lambdalogger" {
   role = "${aws_iam_role.lambdalogger.arn}"
 
   s3_bucket     = "${data.aws_s3_bucket.zips.id}"
-  s3_key        = "${var.project}/${var.project}-latest.zip"
+  s3_key        = "lambda/${var.project}/${var.project}-latest.zip"
   function_name = "${var.project}_dev"
   handler       = "${var.project}.out"
   runtime       = "go1.x"
@@ -18,8 +18,8 @@ resource "aws_lambda_function" "lambdalogger" {
       SHA           = "latest"
       LOG_LEVEL     = "debug"
 
-      HUMIO_TOKEN      = "XKQuY2DL27gJ8CKlHy63ktinFGAgL0gLidGxjsQBHnvB"
-      HUMIO_REPOSITORY = "sandbox"
+      HUMIO_TOKEN      = "Ca70r0iYCBEH2FFsXQmTYBWZ1xjttKGNZBvAkNw82iI6"
+      HUMIO_REPOSITORY = "netlify-production"
     }
   }
 
@@ -117,17 +117,17 @@ EOF
 # PLUMBING
 #
 variable profile {
-  default = "personal"
+  default = "default"
 }
 
 provider "aws" {
     version = "1.14.1"
-    region  = "us-east-1"
-    profile = "${var.profile}"
+    region  = "us-west-2"
+    // profile = "${var.profile}"
 }
 
  # our current account
 data "aws_caller_identity" "current" {}
 data "aws_s3_bucket" "zips" {
-    bucket = "rybit-lambda-zips"
+    bucket = "netlify-infrastructure"
 }
