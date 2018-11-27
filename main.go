@@ -16,7 +16,7 @@ var rootLogger *logrus.Entry
 var client *http.Client
 
 func main() {
-	util.LoadConfig(&config)
+	LoadConfig(&config)
 	rootLogger = NewLogger(&config.LogConfig)
 	if err := config.validate(); err != nil {
 		rootLogger.WithError(err).Fatal("Invalid configuration")
